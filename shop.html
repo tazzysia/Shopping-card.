@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>SHOP.</title>
+	
+	<link rel="stylesheet" type="text/css" href="fontawesome/css/all.min.css">
+	<style type="text/css">
+	body{
+		background-color: bisque;
+	}
+		#food{
+			display: grid;
+			grid-template-columns: auto auto auto;
+			text-align: center;
+			line-height: 10px;
+			margin-left: 80px;
+			color: firebrick;
+			
+		}
+		#list{
+			display: grid;
+			grid-template-columns: auto auto;
+			margin-top: 0px;
+		}
+		#table{
+			margin-left: 140px;
+			color: brown;
+		}
+		button{
+			background-color: coral;
+			border-radius: 10px;
+			padding: 6px 6px;
+			border-color: coral;
+
+		}
+		h1{
+			margin-left: 320px;
+			color: brown;
+		}
+		
+
+		
+		
+	</style>
+</head>
+<body>
+	<h1>Menu</h1>
+	<div id="list">
+
+	<div id="food">
+
+	<div>
+		<img src="img/ice-cream-1.jpg" width="150px" height="150px">
+        <p><b>Ice-creams</b></p>
+        <p><b>2000ks</b></p>
+        <button class="addtocart" data-id="1" data-name="Ice-creams" data-price="2000" data-photo="img/ice-cream-1.jpg">Add to cart</button>
+	</div>
+	<div >
+		<img src="img/Cake.jpg" width="150px" height="150px">
+        <p><b>Cakes</b></p>
+        <p><b>5000ks</b></p>
+        <button  class="addtocart"data-id="2" data-name="Cakes" data-price="5000" data-photo="img/Cake.jpg">Add to cart</button>
+	</div>
+	<div>
+		<img src="img/croissants.jpg" width="150px" height="150px">
+        <p><b>Croissants</b></p>
+        <p><b>2500ks</b></p>
+        <button  class="addtocart" data-id="3" data-name="Croissants" data-price="2500" data-photo="img/croissants.jpg">Add to cart</button>
+	</div>
+    <div><br>
+		<img src="img/coffee.jpg" width="150px" height="150px">
+        <p><b>Coffee</b></p>
+        <p><b>3500ks</b></p>
+        <button  class="addtocart" data-id="4" data-name="Coffee" data-price="3500" data-photo="img/coffee.jpg">Add to cart</button>
+	</div>
+	<div><br>
+		<img src="img/Donut.jpg" width="150px" height="150px">
+        <p><b>Donuts</b></p>
+        <p><b>2500ks</b></p>
+        <button  class="addtocart" data-id="5" data-name="Donuts" data-price="2500" data-photo="img/donut.jpg">Add to cart</button>
+	</div>
+	<div><br>
+		<img src="img/bread.jpg" width="150px" height="150px">
+        <p><b>Breads</b></p>
+        <p><b>4500ks</b></p>
+        <button  class="addtocart" data-id="6" data-name="Breads" data-price="4500" data-photo="img/bread.jpg">Add to cart</button>
+	</div>
+	</div>
+   
+
+	<div id="table">
+		 <b>Cart</b>
+		 <i class="fas fa-cart-plus fa-2x"></i><span id="cart">0</span>
+		<table border="1" cellpadding="10" cellspacing="0">
+			<thead>
+				<th>No</th>
+				<th>Name</th>
+				<th>Photo</th>
+				<th>Qty</th>
+				<th>Price</th>
+				<th>Subtotal</th>
+			</thead>
+			<tbody>
+				
+			</tbody>
+			
+			
+		</table>
+		<button class="checkout">Check Out</button>
+	</div>
+
+	</div>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+<!-- jquery -->
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+           show()
+			$(".addtocart").click(function() {
+
+           var id=$(this).data("id")
+           var name=$(this).data("name")
+           var price=$(this).data("price")
+           var photo=$(this).data("photo")
+
+           var foodItem={
+           	id:id,
+           	name:name,
+           	price:price,
+           	photo:photo,
+           	qty:1,
+           }
+
+           var foodlist=localStorage.getItem("foodName")
+           var foodArray;
+           if(foodlist==null){
+            foodArray=[]
+           }else{
+           	foodArray=JSON.parse(foodlist)
+           }
+
+           var status= false;
+           $.each(foodArray,function(i,v){
+            if(v.id==id){
+            	v.qty++
+            	status=true;
+            }
+           })
+           if(!status){
+           foodArray.push(foodItem)
+           }
+
+            var status= false;
+           $.each(foodArray,function(i,v){
+            if(v.id==id){
+            	v.qty--
+            	status=true;
+            }
+           })
+           if(!status){
+           foodArray.pop(foodItem)
+           }
+
+           var foodString=JSON.stringify(foodArray)
+           localStorage.setItem("foodName",foodString)
+           show()
+			})
+
+		function show(){
+
+			var foodlist=localStorage.getItem("foodName")
+			var foodArray=JSON.parse(foodlist)
+
+			var html="";
+			var j=1;
+			var total=0;
+			$.each(foodArray,function(i,v) {
+				var subtotal = v.qty *v.price
+				total+=subtotal
+				html +=`<tr>
+				        <td>${j++}</td>
+				        <td>${v.name}</td>
+				        <td><img src="${v.photo}" width="75" height="75"</td>
+				        <td><button class="btnincrease" data-id=${i}>+</button>${v.qty}<button class="btndecrease" data-id=${i}>-</button></td>
+				        <td>${v.price} Ks</td>
+				        <td>${subtotal} Ks
+				        <button class="btnremove" data-id="${i}">X</button</td>
+				        </tr>`
+			})
+			html+=`<tr>
+			       <td colspan=5>Total</td>
+			       <td>${total} Ks</td>
+			       </tr`
+	    	$("tbody").html(html)
+
+		}
+        $(".btnremove").click(function(){
+        	var id=$(this).data(id)
+        	var foodlist=localStorage.getItem("foodName")
+        	var foodArray=JSON.parse(foodlist)
+
+        	foodArray.splice(id,1)
+        	var foodString=JSON.stringify(foodArray)
+        	localStorage.setItem("foodName",foodString)
+        	show()
+        })
+        $("tbody").on("click",".btnincrease",function() {
+         var id= $(this).data("id")
+         var foodlist=localStorage.getItem("foodName")
+         var foodArray=JSON.parse(foodlist)
+         $.each(foodArray,function(i,v) {
+         	if(id==i){
+         		v.qty++
+         	}
+         })
+          
+         foodString=JSON.stringify(foodArray)
+         localStorage.setItem("foodName",foodString)
+         show()
+        })
+
+        $("tbody").on("click",".btndecrease",function() {
+         var id= $(this).data("id")
+         var foodlist=localStorage.getItem("foodName")
+         var foodArray=JSON.parse(foodlist)
+         $.each(foodArray,function(i,v) {
+         	if(id==i){
+         		v.qty--
+         	}
+         })
+         foodString=JSON.stringify(foodArray)
+         localStorage.setItem("foodName",foodString)
+         show()
+        })
+         
+         var cart=0;
+        $(".checkout").click(function() {
+        	cart++
+        	
+        $("#cart").html(cart)
+        })
+
+
+
+// <i class="fas fa-minus"></i>
+// <i class="far fa-trash-alt"></i>
+		})
+	</script>
+</body>
+</html>
